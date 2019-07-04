@@ -1,0 +1,54 @@
+{
+ "autoname": "field:party_type",
+ "creation": "2019-06-24 12:13:56.234150",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "party_type",
+  "account_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Party",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "account_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Account Type",
+   "options": "Payable\nReceivable",
+   "reqd": 1
+  }
+ ],
+ "modified": "2019-06-24 12:48:36.427753",
+ "modified_by": "Administrator",
+ "module": "Accounting",
+ "name": "Party Type",
+ "name_case": "Title Case",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "show_preview_popup": 1,
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "title_field": "account_type",
+ "track_changes": 1
+}

@@ -1,0 +1,62 @@
+{
+ "creation": "2019-06-27 22:25:02.608593",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item",
+  "item_name",
+  "item_rate",
+  "item_quantity",
+  "item_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "item.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Read Only",
+   "label": "Item Name"
+  },
+  {
+   "fetch_from": "item.selling_rate",
+   "fieldname": "item_rate",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Item Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Item Quantity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_amount",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "Item Amount",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2019-07-02 18:47:34.035825",
+ "modified_by": "Administrator",
+ "module": "Accounting",
+ "name": "Sales Invoice Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "track_changes": 1
+}

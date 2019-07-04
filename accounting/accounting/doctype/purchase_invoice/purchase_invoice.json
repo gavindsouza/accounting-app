@@ -1,0 +1,127 @@
+{
+ "autoname": "format:INV-PUR-{customer}-{date}-####",
+ "creation": "2019-06-24 17:31:39.331856",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "supplier_details_column",
+  "supplier",
+  "column_break_3",
+  "supplier_name",
+  "invoice_details_section",
+  "posting_timestamp",
+  "items",
+  "total_amount",
+  "account_details_section",
+  "credit_to",
+  "column_break_11",
+  "assets_account",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Party",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Purchase Invoice",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Read Only",
+   "label": "Total Amount"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Invoice Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "supplier.party_name",
+   "fieldname": "supplier_name",
+   "fieldtype": "Read Only",
+   "label": "Supplier Name"
+  },
+  {
+   "fieldname": "supplier_details_column",
+   "fieldtype": "Section Break",
+   "label": "Supplier Details"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_details_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice Details"
+  },
+  {
+   "default": "Now",
+   "fieldname": "posting_timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Posting Timestamp",
+   "reqd": 1
+  },
+  {
+   "fieldname": "account_details_section",
+   "fieldtype": "Section Break",
+   "label": "Account Details"
+  },
+  {
+   "fieldname": "credit_to",
+   "fieldtype": "Link",
+   "label": "Credit To",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assets_account",
+   "fieldtype": "Link",
+   "label": "Assets Account",
+   "options": "Account",
+   "reqd": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2019-07-03 18:08:43.017539",
+ "modified_by": "Administrator",
+ "module": "Accounting",
+ "name": "Purchase Invoice",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "track_changes": 1
+}
