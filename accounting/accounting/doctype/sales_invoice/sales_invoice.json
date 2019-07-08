@@ -1,5 +1,5 @@
 {
- "autoname": "format:INV-SALES-{customer}-{date}-####",
+ "autoname": "format:INV-SALES-{customer}-{####}",
  "creation": "2019-06-24 17:29:48.239612",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -101,7 +101,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2019-07-03 18:01:04.270718",
+ "modified": "2019-07-04 15:26:29.490161",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Sales Invoice",

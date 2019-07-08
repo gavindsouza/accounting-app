@@ -3,8 +3,48 @@
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
-# import frappe
+import frappe
+from frappe import _
 from frappe.model.document import Document
 
 class PurchaseInvoice(Document):
-	pass
+    def validate(self):
+        items = self.get('items')
+        for item in items:
+            if item.item_quantity < 0:
+                frappe.throw(_("Item quantity cannot be negative"))
+            if item.item_rate <= 0:
+                frappe.throw(_("Item rate must be non zero"))
+            if item.item_amount == 0:
+                frappe.throw(_("Amount cannot be zero"))
+
+    def on_submit(self):
+        # altering goods transaction: add to asset account
+        doc = frappe.get_doc({
+            'doctype': 'GL Entry',
+            'posting_datetime': self.posting_timestamp,
+            'account': self.credit_to,
+            'credit': self.total_amount,
+            'voucher_type': self.doctype,
+            'against_account': self.assets_account
+        })
+        doc.insert()
+
+        doc = frappe.get_doc("Account", self.assets_account)
+        doc.account_balance = doc.account_balance + float(self.total_amount)
+        doc.save()
+
+        #  pay money: debit account
+        doc = frappe.get_doc({
+            'doctype': 'GL Entry',
+            'posting_datetime': self.posting_timestamp,
+            'account': self.assets_account,
+            'debit': self.total_amount,
+            'voucher_type': self.doctype,
+            'against_account': self.credit_to
+        })
+        doc.insert()
+
+        doc = frappe.get_doc("Account", self.credit_to)
+        doc.account_balance = doc.account_balance - float(self.total_amount)
+        doc.save()

@@ -16,27 +16,39 @@ frappe.ui.form.on('Purchase Invoice', {
 		form.set_query("assets_account", () => { return { filters: { "is_group": 0, "parent_account": "Stock Assets" } } });
 		form.set_query("supplier", () => { return { filters: { "group": "Supplier" } } });
 		form.set_query("item", "items", () => { return { filters: { "labelled": "Purchased" } } });
+	},
+
+	on_submit: function (form) {
+		frappe.show_alert({'message': "This got submitted", 'indicator': 'green'});
 	}
+	
 });
 
 frappe.ui.form.on('Invoice Item', {
 	item_quantity: function (form, cdt, cdn) {
 		let curr_item = locals[cdt][cdn];
-		curr_item.item_amount = curr_item.item_rate * curr_item.item_quantity;
+		
+		if (parseInt(curr_item.fraction_allowed) === 0) {
+			curr_item.item_quantity = Math.round(curr_item.item_quantity);
+			form.refresh_fields();
+		}
+		
+		curr_item.item_amount = curr_item.item_rate * curr_item.item_quantity || 0;
 		form.refresh_field('items')
 		form.trigger('set_total_amount');
+
 	},
 
 	item_rate: function (form, cdt, cdn) {
 		let curr_item = locals[cdt][cdn];
-		curr_item.item_amount = curr_item.item_rate * curr_item.item_quantity;
+		curr_item.item_amount = curr_item.item_rate * curr_item.item_quantity || 0;
 		form.refresh_field('items')
 		form.trigger('set_total_amount');
 	},
 
 	item_amount: function (form, cdt, cdn) {
 		let curr_item = locals[cdt][cdn];
-		locals[cdt][cdn].item_amount = flt(curr_item.item_quantity) * flt(curr_item.item_rate);
+		locals[cdt][cdn].item_amount = curr_item.item_quantity * curr_item.item_rate || 0;
 		form.trigger('set_total_amount');
 	}
 });

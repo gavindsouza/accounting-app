@@ -50,14 +50,14 @@
    "reqd": 1
   },
   {
-   "default": "0",
    "fetch_from": "item_uom.uom_fraction",
    "fieldname": "sold_in_fraction",
-   "fieldtype": "Check",
+   "fieldtype": "Read Only",
+   "hidden": 1,
    "label": "Sold In Fraction"
   }
  ],
- "modified": "2019-07-03 18:33:44.191824",
+ "modified": "2019-07-04 14:17:29.565520",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Item",

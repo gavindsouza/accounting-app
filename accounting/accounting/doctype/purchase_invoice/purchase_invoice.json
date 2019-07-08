@@ -1,5 +1,5 @@
 {
- "autoname": "format:INV-PUR-{customer}-{date}-####",
+ "autoname": "format:INV-PUR-{supplier}-{####}",
  "creation": "2019-06-24 17:31:39.331856",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -101,7 +101,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2019-07-03 18:08:43.017539",
+ "modified": "2019-07-04 15:24:05.576360",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Purchase Invoice",

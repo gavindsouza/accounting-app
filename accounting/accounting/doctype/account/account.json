@@ -14,7 +14,8 @@
   "old_parent",
   "rgt",
   "lft",
-  "is_group"
+  "is_group",
+  "account_balance"
  ],
  "fields": [
   {
@@ -87,9 +88,17 @@
    "fieldname": "is_group",
    "fieldtype": "Check",
    "label": "Is Group"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "account_balance",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Account Balance"
   }
  ],
- "modified": "2019-06-27 16:02:25.839704",
+ "modified": "2019-07-05 14:38:26.146232",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Account",

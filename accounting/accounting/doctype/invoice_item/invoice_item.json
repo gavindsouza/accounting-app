@@ -56,15 +56,15 @@
    "label": "UOM"
   },
   {
-   "default": "0",
-   "fetch_from": "uom.item_fraction",
+   "fetch_from": "item.sold_in_fraction",
    "fieldname": "fraction_allowed",
    "fieldtype": "Read Only",
+   "hidden": 1,
    "label": "Fraction Allowed"
   }
  ],
  "istable": 1,
- "modified": "2019-07-03 15:41:50.851521",
+ "modified": "2019-07-04 15:00:01.653840",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Invoice Item",
