@@ -30,10 +30,14 @@ class JournalEntry(Document):
             frappe.throw(_("Can't have the same account twice like that fam"))
 
     def on_submit(self):
-        self.update_accounts_balance()
+        self.update_accounts_balance(_type='submit')
         self.make_gl_entry()
 
-    def update_accounts_balance(self):
+    def on_cancel(self):
+        self.update_accounts_balance(_type='cancel')
+        self.remove_gl_entry()
+
+    def update_accounts_balance(self, _type):
         # Assets = get_descendants_of('Account', 'Assets')
         # Expenses = get_descendants_of('Account', 'Expenses')
         # Income = get_descendants_of('Account', 'Income')
@@ -46,23 +50,37 @@ class JournalEntry(Document):
 
         for entry in self.get("journal_entry_table"):
             doc = frappe.get_doc("Account", entry.account)
-            if doc.root_type in Assets + Expenses:
-                if entry.debit > 0:
-                    doc.balance += entry.debit
-                elif entry.credit > 0:
-                    doc.balance -= entry.credit
+        
+            if _type == 'submit':
+                if doc.root_type in Assets + Expenses:
+                    if entry.debit > 0:
+                        doc.balance += entry.debit
+                    elif entry.credit > 0:
+                        doc.balance -= entry.credit
 
-            elif doc.root_type in Income + Liabilities:
-                if entry.debit > 0:
-                    doc.balance -= entry.debit
-                elif entry.credit > 0:
-                    doc.balance += entry.credit
+                elif doc.root_type in Income + Liabilities:
+                    if entry.debit > 0:
+                        doc.balance -= entry.debit
+                    elif entry.credit > 0:
+                        doc.balance += entry.credit
+            
+            elif _type == 'cancel':
+                if doc.root_type in Assets + Expenses:
+                    if entry.debit > 0:
+                        doc.balance -= entry.debit
+                    elif entry.credit > 0:
+                        doc.balance += entry.credit
+
+                elif doc.root_type in Income + Liabilities:
+                    if entry.debit > 0:
+                        doc.balance += entry.debit
+                    elif entry.credit > 0:
+                        doc.balance -= entry.credit
 
             doc.save()
 
 
-    def make_gl_entry(self):
-        
+    def make_gl_entry(self):  
         if hasattr(self, 'against_account'):
             pass
         else: 
@@ -78,6 +96,13 @@ class JournalEntry(Document):
                 'credit': entry.credit,
                 'against_account': self.against_account,
                 'voucher_type': self.doctype,
-                'reason': entry.reason
+                'reason': entry.reason,
+                'reference_doc': self.name
             })
             doc.insert()
+
+    def remove_gl_entry(self):
+        frappe.db.sql("""
+            delete from `tabGL Entry` 
+            where reference_doc={} 
+        """.format(self.name))

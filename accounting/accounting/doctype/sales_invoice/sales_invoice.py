@@ -27,7 +27,8 @@ class SalesInvoice(Document):
             'account': self.assets_account,
             'credit': self.total_amount,
             'voucher_type': self.doctype,
-            'against_account': self.debit_to
+            'against_account': self.debit_to,
+            'reference_doc': self.name
         })
         doc.insert()
 
@@ -42,10 +43,27 @@ class SalesInvoice(Document):
             'account': self.debit_to,
             'debit': self.total_amount,
             'voucher_type': self.doctype,
-            'against_account': self.assets_account
+            'against_account': self.assets_account,
+            'reference_doc': self.name
         })
         doc.insert()
 
         doc = frappe.get_doc("Account", self.debit_to)
         doc.account_balance = doc.account_balance + float(self.total_amount)
         doc.save()
+
+    def on_cancel(self):
+        # reverse transactions
+        doc = frappe.get_doc("Account", self.assets_account)
+        doc.account_balance = doc.account_balance + float(self.total_amount)
+        doc.save()
+
+        doc = frappe.get_doc("Account", self.debit_to)
+        doc.account_balance = doc.account_balance - float(self.total_amount)
+        doc.save()
+
+        # remove gl entry
+        frappe.db.sql("""
+            delete from `tabGL Entry` 
+            where reference_doc={} 
+        """.format(self.name))
