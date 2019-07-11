@@ -18,10 +18,6 @@ frappe.ui.form.on('Journal Entry', {
 
 	refresh: function (form) {
 		form.set_query("account", "journal_entry_table", () => { return { filters: { "is_group": 0 } } });
-	},
-
-	on_submit: function (form) {
-		frappe.msgprint("This got submitted");
 	}
 });
 
@@ -34,19 +30,16 @@ frappe.ui.form.on('Journal Entry Table', {
 		form.trigger('set_summary');
 	},
 
-	account: function (frm, dt, dn) {
-		let curr_row = locals[dt][dn];
-		let last_row = frm.fields_dict.journal_entry_table.grid.last_docname;
-		let grd = cur_frm.fields_dict.journal_entry_table.grid.grid_rows;
+	account: function (form, cdt, cdn) {
+		let difference = form.fields_dict.difference.value;
 
-		let grd_len = grd.length;
+		if (difference < 0) {
+			locals[cdt][cdn].debit = Math.abs(difference);
+		} else if (difference > 0) {
+			locals[cdt][cdn].credit = Math.abs(difference);
+		}
 
-		// if (grd_len > 1){
-		// 	grd[grd_len].doc.credit = grd[grd_len - 1].doc.debit; 
-
-		// 	frm.refresh_fields();
-		// }
-
-		console.log(grd_len);
+		form.trigger('set_summary');
+		form.refresh_fields();
 	}
 });

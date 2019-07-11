@@ -60,13 +60,10 @@ def get_data_with_opening_closing(filters, account_details, gl_entries):
         return balance
 
     for data_row in data:
-        data_row['against'] = data_row.get('against_account')
-
         if not data_row.get('posting_datetime'):
             balance = 0
 
-        balance = _get_balance(data_row, balance, 'debit', 'credit')
-        data_row['balance'] = balance
+        data_row['balance'] = _get_balance(data_row, balance, 'debit', 'credit')
 
     return data
 
@@ -76,18 +73,18 @@ def get_accountwise_gle(filters, general_ledger_entries, gle_map):
     totals = get_totals()
     entries = []
 
-    def _update_value_in_dict(data, key, gle):
+    def _update_values(data, key, gle):
         data[key].debit += flt(gle.debit)
         data[key].credit += flt(gle.credit)
 
     for gle in general_ledger_entries:
         if gle.posting_datetime.date() < from_date:
-            _update_value_in_dict(totals, 'opening', gle)
-            _update_value_in_dict(totals, 'closing', gle)
+            _update_values(totals, 'opening', gle)
+            _update_values(totals, 'closing', gle)
 
         elif gle.posting_datetime.date() <= to_date:
-            _update_value_in_dict(totals, 'total', gle)
-            _update_value_in_dict(totals, 'closing', gle)
+            _update_values(totals, 'total', gle)
+            _update_values(totals, 'closing', gle)
             entries += [gle]
 
     return totals, entries
@@ -97,8 +94,8 @@ def get_totals():
     def _get_debit_credit_dict(label):
         return _dict(
             account="'{0}'".format(label),
-            debit=0.0,
-            credit=0.0
+            debit=0,
+            credit=0
         )
 
     return _dict(
@@ -109,6 +106,9 @@ def get_totals():
 
 
 def get_data(filters, account_details):
+    if not filters.get('account'):
+        filters['account'] = 'Company Root'
+        
     general_ledger_entries = get_gl_entries(filters)
     data = get_data_with_opening_closing(
         filters, account_details, general_ledger_entries)
@@ -122,13 +122,14 @@ def get_columns():
             "label": _("Reference Doc"),
             "fieldname": "reference_doc",
             "fieldtype": "Dynamic Link",
-            "width": 90
+            "options": "voucher_type",
+            "width": 150
         },
         {
             "label": _("Posting Timestamp"),
             "fieldname": "posting_datetime",
             "fieldtype": "Date",
-            "width": 90
+            "width": 150
         },
         {
             "label": _("Account"),
@@ -156,21 +157,21 @@ def get_columns():
             "width": 130
         },
         {
-            "label": _("Transaction Type"),
-            "fieldname": "transaction_type",
+            "label": _("Voucher Type"),
+            "fieldname": "voucher_type",
+            "fieldtype": "Link",
+            "options": "DocType",
             "width": 120
         },
         {
             "label": _("Against Account"),
             "fieldname": "against_account",
-            "width": 120
+            "width": 100
         },
         {
-            "label": _("Party"),
-            "fieldname": "party",
-            "fieldtype": "Link",
-            "options": "Party",
-            "width": 100
+            "label": _("Reason"),
+            "fieldname": "reason",
+            "width": 150
         }
     ]
 

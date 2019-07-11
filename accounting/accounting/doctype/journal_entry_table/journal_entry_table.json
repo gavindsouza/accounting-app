@@ -33,19 +33,19 @@
   },
   {
    "fieldname": "debit",
-   "fieldtype": "Int",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Debit"
   },
   {
    "fieldname": "credit",
-   "fieldtype": "Int",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Credit"
   }
  ],
  "istable": 1,
- "modified": "2019-07-04 11:37:33.899412",
+ "modified": "2019-07-11 14:52:20.268947",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Journal Entry Table",

@@ -65,5 +65,5 @@ class SalesInvoice(Document):
         # remove gl entry
         frappe.db.sql("""
             delete from `tabGL Entry` 
-            where reference_doc={} 
+            where reference_doc='{}' 
         """.format(self.name))

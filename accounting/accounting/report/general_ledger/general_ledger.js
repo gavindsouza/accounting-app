@@ -34,8 +34,8 @@ frappe.query_reports["General Ledger"] = {
 			"reqd": 1
 		},
 		{
-			"fieldname": "transaction_type",
-			"label": __("Transaction Type"),
+			"fieldname": "voucher_type",
+			"label": __("Voucher Type"),
 			"fieldtype": "Select",
 			"options": [
 				"",
@@ -48,7 +48,8 @@ frappe.query_reports["General Ledger"] = {
 			"fieldname": "account",
 			"label": __("Account"),
 			"fieldtype": "Link",
-			"options": "Account"
+			"options": "Account",
+			"default": "Company Root"
 		}
 	]
 };

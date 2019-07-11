@@ -14,8 +14,10 @@ class JournalEntry(Document):
         journal_entries = self.get('journal_entry_table')
         total_debit = self.get('total_debit')
         total_credit = self.get('total_credit')
+        accounts_in = []
 
         for entry in journal_entries:
+            accounts_in.append(entry.account)
             if (entry.debit < 0 and entry.credit < 0) or (entry.debit > 0 and entry.credit > 0):
                 frappe.throw(_("Something's off"))
 
@@ -26,9 +28,9 @@ class JournalEntry(Document):
         if len(journal_entries) < 2:
             frappe.throw(_("Entry's Missing?"))
 
-        if set(x for x in entry.account) < len(journal_entries):
+        if len(set(accounts_in)) < len(journal_entries):
             frappe.throw(_("Can't have the same account twice like that fam"))
-
+        
     def on_submit(self):
         self.update_accounts_balance(_type='submit')
         self.make_gl_entry()
@@ -104,5 +106,5 @@ class JournalEntry(Document):
     def remove_gl_entry(self):
         frappe.db.sql("""
             delete from `tabGL Entry` 
-            where reference_doc={} 
+            where reference_doc='{}' 
         """.format(self.name))
