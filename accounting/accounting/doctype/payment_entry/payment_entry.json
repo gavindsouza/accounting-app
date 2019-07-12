@@ -1,0 +1,132 @@
+{
+ "creation": "2019-07-12 10:16:09.380181",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "transaction_details_section",
+  "transaction_type",
+  "posting_timestamp",
+  "column_break_3",
+  "reference_invoice",
+  "party_details",
+  "accounts_section",
+  "paid_from",
+  "party_balance",
+  "column_break_10",
+  "paid_to",
+  "payment_amount",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "transaction_details_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Details"
+  },
+  {
+   "fieldname": "transaction_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Transaction Type",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference_invoice",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Invoice",
+   "options": "transaction_type"
+  },
+  {
+   "default": "Now",
+   "fieldname": "posting_timestamp",
+   "fieldtype": "Datetime",
+   "label": "Posting Timestamp",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "reference_invoice.party",
+   "fieldname": "party_details",
+   "fieldtype": "Read Only",
+   "label": "Party Details",
+   "reqd": 1
+  },
+  {
+   "fieldname": "accounts_section",
+   "fieldtype": "Section Break",
+   "label": "Accounts"
+  },
+  {
+   "fieldname": "paid_from",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Paid From",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Paid To",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "reference_invoice.total_amount",
+   "fieldname": "party_balance",
+   "fieldtype": "Read Only",
+   "label": "Party Balance",
+   "options": "Currency:INR",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Payment Entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "reference_invoice.total_amount",
+   "fieldname": "payment_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Payment Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2019-07-12 10:39:25.966069",
+ "modified_by": "Administrator",
+ "module": "Accounting",
+ "name": "Payment Entry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "track_changes": 1
+}
