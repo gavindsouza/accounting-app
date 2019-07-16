@@ -1,5 +1,4 @@
 import frappe
-from frappe.utils.nestedset import get_root_of, get_descendants_of
 from frappe.utils import cint
 
 

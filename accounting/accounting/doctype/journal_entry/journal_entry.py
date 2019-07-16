@@ -5,8 +5,9 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
+from frappe.utils import getdate
 from frappe.model.document import Document
-from frappe.utils.nestedset import get_descendants_of
+from frappe.utils import now_datetime
 
 
 class JournalEntry(Document):
@@ -30,81 +31,42 @@ class JournalEntry(Document):
 
         if len(set(accounts_in)) < len(journal_entries):
             frappe.throw(_("Can't have the same account twice like that fam"))
-        
+
     def on_submit(self):
-        self.update_accounts_balance(_type='submit')
-        self.make_gl_entry()
+        self.make_gl_entry(_type='submit')
 
     def on_cancel(self):
-        self.update_accounts_balance(_type='cancel')
-        self.remove_gl_entry()
+        self.make_gl_entry(_type='cancel')
 
-    def update_accounts_balance(self, _type):
-        # Assets = get_descendants_of('Account', 'Assets')
-        # Expenses = get_descendants_of('Account', 'Expenses')
-        # Income = get_descendants_of('Account', 'Income')
-        # Liabilities = get_descendants_of('Account', 'Liabilities')
-
-        Assets = ['Debtors', 'Stock in Hand']
-        Expenses = []
-        Income = ['Cost of Goods Sold']
-        Liabilities = ['Creditors']
-
-        for entry in self.get("journal_entry_table"):
-            doc = frappe.get_doc("Account", entry.account)
-        
-            if _type == 'submit':
-                if doc.root_type in Assets + Expenses:
-                    if entry.debit > 0:
-                        doc.balance += entry.debit
-                    elif entry.credit > 0:
-                        doc.balance -= entry.credit
-
-                elif doc.root_type in Income + Liabilities:
-                    if entry.debit > 0:
-                        doc.balance -= entry.debit
-                    elif entry.credit > 0:
-                        doc.balance += entry.credit
-            
-            elif _type == 'cancel':
-                if doc.root_type in Assets + Expenses:
-                    if entry.debit > 0:
-                        doc.balance -= entry.debit
-                    elif entry.credit > 0:
-                        doc.balance += entry.credit
-
-                elif doc.root_type in Income + Liabilities:
-                    if entry.debit > 0:
-                        doc.balance += entry.debit
-                    elif entry.credit > 0:
-                        doc.balance -= entry.credit
-
-            doc.save()
-
-
-    def make_gl_entry(self):  
+    def make_gl_entry(self, _type):
         if hasattr(self, 'against_account'):
             pass
-        else: 
+        else:
             self.against_account = ''
 
         for entry in self.get('journal_entry_table'):
             doc = frappe.get_doc({
                 'doctype': 'GL Entry',
-                'posting_datetime': self.posting_timestamp,
                 'account': entry.account,
                 'party': entry.party,
-                'debit': entry.debit,
-                'credit': entry.credit,
                 'against_account': self.against_account,
                 'voucher_type': self.doctype,
-                'reason': entry.reason,
                 'reference_doc': self.name
             })
-            doc.insert()
 
-    def remove_gl_entry(self):
-        frappe.db.sql("""
-            delete from `tabGL Entry` 
-            where reference_doc='{}' 
-        """.format(self.name))
+            if _type == 'submit':
+                doc.posting_datetime = self.posting_timestamp
+                doc.debit = entry.debit
+                doc.credit = entry.credit
+                doc.reason = entry.reason
+
+            elif _type == 'cancel':
+                doc.posting_datetime = now_datetime()
+                doc.credit = entry.debit
+                doc.debit = entry.credit
+                doc.reason = "Cancelled {} on {}".format(
+                    self.doctype, getdate(doc.posting_datetime)) + entry.reason
+            else:
+                frappe.throw(_("Invalid journal entry type"))
+
+            doc.insert()
