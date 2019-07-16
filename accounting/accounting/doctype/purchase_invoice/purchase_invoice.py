@@ -21,19 +21,6 @@ class PurchaseInvoice(Document):
                 frappe.throw(_("Amount cannot be zero"))
 
     def on_submit(self):
-        # altering goods transaction: add to asset account
-        doc = frappe.get_doc({
-            'doctype': 'GL Entry',
-            'posting_datetime': self.posting_timestamp,
-            'voucher_type': self.doctype,
-            'reference_doc': self.name,
-
-            'account': self.credit_to,
-            'credit': self.total_amount,
-            'against_account': self.assets_account
-        })
-        doc.insert()
-
         #  pay money: debit account
         doc = frappe.get_doc({
             'doctype': 'GL Entry',
@@ -44,6 +31,19 @@ class PurchaseInvoice(Document):
             'account': self.assets_account,
             'debit': self.total_amount,
             'against_account': self.credit_to
+        })
+        doc.insert()
+
+        # altering goods transaction: add to asset account
+        doc = frappe.get_doc({
+            'doctype': 'GL Entry',
+            'posting_datetime': self.posting_timestamp,
+            'voucher_type': self.doctype,
+            'reference_doc': self.name,
+
+            'account': self.credit_to,
+            'credit': self.total_amount,
+            'against_account': self.assets_account
         })
         doc.insert()
 

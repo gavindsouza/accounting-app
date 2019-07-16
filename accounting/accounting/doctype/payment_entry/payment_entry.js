@@ -1,12 +1,15 @@
 // Copyright (c) 2019, gvn and contributors
 // For license information, please see license.tfieldt
 
+{% include 'accounting/public/js/custom.js' %}
+
 frappe.ui.form.on('Payment Entry', {
 	refresh: function (form) {
 		form.trigger('filters');
 		['paid_from', 'paid_to'].forEach(
 			(field) => { form.toggle_reqd(field, true); }
 		)
+		add_button_to_general_ledger(form);
 	},
 
 	transaction_type: function (form) {

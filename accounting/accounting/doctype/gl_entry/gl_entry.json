@@ -48,9 +48,9 @@
   },
   {
    "fieldname": "voucher_type",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "label": "Voucher Type",
-   "options": "DocType"
+   "options": "\nSales Invoice\nPurchase Invoice\nPayment Entry\nJournal Entry"
   },
   {
    "fieldname": "posting_datetime",
@@ -80,7 +80,7 @@
   }
  ],
  "in_create": 1,
- "modified": "2019-07-10 15:33:48.132252",
+ "modified": "2019-07-15 17:13:53.560034",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "GL Entry",

@@ -19,6 +19,7 @@ frappe.ui.form.on('Purchase Invoice', {
 		form.set_query("party", () => { return { filters: { "group": "Supplier" } } });
 		form.set_query("item", "items", () => { return { filters: { "labelled": "Purchased" } } });
 		make_payment_entry(form);
+		add_button_to_general_ledger(form);
 	}
 });
 

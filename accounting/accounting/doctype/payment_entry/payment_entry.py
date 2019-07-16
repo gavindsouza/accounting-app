@@ -28,91 +28,112 @@ class PaymentEntry(Document):
         self.make_gl_entry(_type='cancel')
 
     def make_gl_entry(self, _type):
+        # decision_rules = {
+        #     'Sales Invoice': {'submit': self.make_sales_entry(), 'cancel': self.reverse_sales_entry()},
+        #     'Purchase Invoice': {'submit': self.make_purchase_entry(), 'cancel': self.reverse_purchase_entry()}
+        # }
+        # decision_rules[self.transaction_type][_type]
+
+        if self.transaction_type == "Sales Invoice":
+            if _type == 'submit':
+                self.make_sales_entry()
+            elif _type == 'cancel':
+                self.reverse_sales_entry()
+
+        elif self.transaction_type == "Purchase Invoice":
+            if _type == 'submit':
+                self.make_purchase_entry()
+            elif _type == 'cancel':
+                self.reverse_purchase_entry()
+
+        else:
+            frappe.throw(_("Invalid operation in {}".format(self.doctype)))
+
+    def make_sales_entry(self):
+        # transfer funds
+        doc = self.base_doc()
+        doc.account = self.paid_to
+        doc.against_account = self.party
+        doc.debit = self.payment_amount
+        doc.reason = "Transfer of funds to {}: {} against {} on {}".format(
+            self.party, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
+        doc.insert()
+
+        # transfer goods
+        doc = self.base_doc()
+        doc.account = self.paid_from
+        doc.against_account = self.party
+        doc.credit = self.payment_amount
+        doc.reason = "Update {} from {}: {} against {} on {}".format(
+            self.paid_from, self.party, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
+        doc.insert()
+
+    def reverse_sales_entry(self):
+        # reverse: transfer goods
+        doc = self.base_doc()
+        doc.account = self.paid_from
+        doc.against_account = self.party
+        doc.posting_datetime = now_datetime()
+        doc.debit = self.payment_amount
+        doc.reason = "Cancelled Transaction on {}".format(
+            getdate(doc.posting_datetime))
+        doc.insert()
+
+        # reverse: transfer funds
+        doc = self.base_doc()
+        doc.account = self.paid_to
+        doc.against_account = self.party
+        doc.posting_datetime = now_datetime()
+        doc.credit = self.payment_amount
+        doc.reason = "Cancelled Transaction on {}".format(
+            getdate(doc.posting_datetime))
+        doc.insert()
+
+    def make_purchase_entry(self):
+        # transfer goods
+        doc = self.base_doc()
+        doc.account = self.paid_to
+        doc.against_account = self.paid_from
+        doc.debit = self.payment_amount
+        doc.reason = "Update {} from {}: {} against {} on {}".format(
+            self.paid_to, self.paid_from, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
+        doc.insert()
+
+        # transfer funds
+        doc = self.base_doc()
+        doc.account = self.paid_from
+        doc.against_account = self.party
+        doc.credit = self.payment_amount
+        doc.reason = "Transfer of funds from {}: {} against {} on {}".format(
+            self.paid_from, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
+        doc.insert()
+
+    def reverse_purchase_entry(self):
+        # reverse: transfer funds
+        doc = self.base_doc()
+        doc.account = self.paid_from
+        doc.against_account = self.party
+        doc.posting_datetime = now_datetime()
+        doc.debit = self.payment_amount
+        doc.reason = "Cancelled Transaction on {}".format(
+            getdate(doc.posting_datetime))
+        doc.insert()
+
+        # reverse: transfer goods
+        doc = self.base_doc()
+        doc.account = self.paid_to
+        doc.against_account = self.paid_from
+        doc.posting_datetime = now_datetime()
+        doc.credit = self.payment_amount
+        doc.reason = "Cancelled Transaction on {}".format(
+            getdate(doc.posting_datetime))
+        doc.insert()
+
+    def base_doc(self):
         doc = frappe.get_doc({
             'doctype': 'GL Entry',
             'posting_datetime': self.posting_timestamp,
             'voucher_type': self.doctype,
-            'reference_doc': self.reference_invoice
         })
-
-        if self.transaction_type == "Sales Invoice":
-            doc.account = self.paid_to
-            doc.against_account = self.party
-
-            if _type == "submit":
-                doc.debit = self.payment_amount
-                doc.reason = "Transfer of funds from {}: {} against {} on {}".format(
-                    self.party, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
-
-            elif _type == "cancel":
-                doc.posting_datetime = now_datetime()
-                doc.credit = self.payment_amount
-                doc.reason = "Cancelled"
-
-            doc.insert()
-
-            doc = frappe.get_doc({
-                'doctype': 'GL Entry',
-                'posting_datetime': self.posting_timestamp,
-                'voucher_type': self.doctype,
-                'reference_doc': self.reference_invoice
-            })
-            doc.account = self.paid_from
-            doc.against_account = self.against_account
-
-            if _type == "submit":
-                doc.credit = self.payment_amount
-                doc.debit = None
-                doc.reason = "Update {} from {}: {} against {} on {}".format(
-                    self.paid_from, self.against_account, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
-
-            elif _type == "cancel":
-                doc.posting_datetime = now_datetime()
-                doc.debit = self.payment_amount
-                doc.credit = None
-                doc.reason = "Cancelled"
-            doc.insert()
-
-        elif self.transaction_type == "Purchase Invoice":
-            doc.account = self.paid_from
-            doc.against_account = self.party
-
-            if _type == "submit":
-                doc.credit = self.payment_amount
-                doc.debit = None
-                doc.reason = "Transfer of funds from {}: {} against {} on {}".format(
-                    self.paid_from, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
-
-            elif _type == "cancel":
-                doc.posting_datetime = now_datetime()
-                doc.credit = None
-                doc.debit = self.payment_amount
-                doc.reason = "Cancelled"
-
-            doc.insert()
-
-            doc = frappe.get_doc({
-                'doctype': 'GL Entry',
-                'posting_datetime': self.posting_timestamp,
-                'voucher_type': self.doctype,
-                'reference_doc': self.reference_invoice
-            })
-            doc.account = self.paid_to
-            doc.against_account = self.paid_from
-
-            if _type == 'submit':
-                doc.debit = self.payment_amount
-                doc.credit = None
-                doc.reason = "Update {} from {}: {} against {} on {}".format(
-                    self.paid_to, self.paid_from, self.doctype, self.transaction_type, getdate(self.posting_timestamp))
-
-            elif _type == "cancel":
-                doc.posting_datetime = now_datetime()
-                doc.credit = self.payment_amount
-                doc.debit = None
-                doc.reason = "Cancelled"
-
-            doc.insert()
-
-        else:
-            frappe.throw(_("Invalid operation in {}".format(self.doctype)))
+        doc.reference_doc = self.name
+        return doc
