@@ -40,6 +40,11 @@ def get_data():
                 "name": "Journal Entry",
                 "type": "doctype",
                 "label": _("Journal Entry")
+            },
+            {
+                "name": "Payment Entry",
+                "type": "doctype",
+                "label": _("Payment Entry")
             }
         ]
     }

@@ -43,10 +43,12 @@
    "reqd": 1
   },
   {
+   "bold": 1,
    "fieldname": "item_amount",
    "fieldtype": "Read Only",
    "in_list_view": 1,
-   "label": "Item Amount"
+   "label": "Item Amount",
+   "options": "Currency"
   },
   {
    "fetch_from": "item.item_uom",
@@ -60,11 +62,12 @@
    "fieldname": "fraction_allowed",
    "fieldtype": "Read Only",
    "hidden": 1,
-   "label": "Fraction Allowed"
+   "label": "Fraction Allowed",
+   "print_hide": 1
   }
  ],
  "istable": 1,
- "modified": "2019-07-04 15:00:01.653840",
+ "modified": "2019-07-12 14:35:01.900228",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Invoice Item",

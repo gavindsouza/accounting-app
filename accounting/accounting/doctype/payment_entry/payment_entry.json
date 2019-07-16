@@ -1,4 +1,5 @@
 {
+ "autoname": "format:PAY-{party}-{####}",
  "creation": "2019-07-12 10:16:09.380181",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -8,7 +9,7 @@
   "posting_timestamp",
   "column_break_3",
   "reference_invoice",
-  "party_details",
+  "party",
   "accounts_section",
   "paid_from",
   "party_balance",
@@ -25,10 +26,10 @@
   },
   {
    "fieldname": "transaction_type",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Transaction Type",
-   "options": "DocType",
+   "options": "\nSales Invoice\nPurchase Invoice",
    "reqd": 1
   },
   {
@@ -39,20 +40,14 @@
    "fieldname": "reference_invoice",
    "fieldtype": "Dynamic Link",
    "label": "Reference Invoice",
-   "options": "transaction_type"
+   "options": "transaction_type",
+   "reqd": 1
   },
   {
    "default": "Now",
    "fieldname": "posting_timestamp",
    "fieldtype": "Datetime",
    "label": "Posting Timestamp",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "reference_invoice.party",
-   "fieldname": "party_details",
-   "fieldtype": "Read Only",
-   "label": "Party Details",
    "reqd": 1
   },
   {
@@ -65,24 +60,22 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Paid From",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "paid_to",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Paid To",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
+   "bold": 1,
    "fetch_from": "reference_invoice.total_amount",
    "fieldname": "party_balance",
    "fieldtype": "Read Only",
    "label": "Party Balance",
-   "options": "Currency:INR",
-   "reqd": 1
+   "options": "Currency:INR"
   },
   {
    "fieldname": "amended_from",
@@ -98,16 +91,22 @@
    "fieldname": "payment_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Payment Amount",
-   "reqd": 1
+   "label": "Payment Amount"
   },
   {
    "fieldname": "column_break_10",
    "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "reference_invoice.party",
+   "fieldname": "party",
+   "fieldtype": "Read Only",
+   "label": "Party Details"
   }
  ],
  "is_submittable": 1,
- "modified": "2019-07-12 10:39:25.966069",
+ "modified": "2019-07-12 17:08:51.965115",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Payment Entry",

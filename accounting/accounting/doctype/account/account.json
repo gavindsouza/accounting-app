@@ -91,6 +91,7 @@
   },
   {
    "allow_in_quick_entry": 1,
+   "default": "0",
    "fieldname": "account_balance",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -98,7 +99,7 @@
    "label": "Account Balance"
   }
  ],
- "modified": "2019-07-05 14:38:26.146232",
+ "modified": "2019-07-15 19:09:31.867268",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Account",
