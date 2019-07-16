@@ -1,6 +1,8 @@
 // Copyright (c) 2019, gvn and contributors
 // For license information, please see license.txt
 
+{% include 'accounting/public/js/custom.js' %}
+
 frappe.ui.form.on('Sales Invoice', {
 	set_total_amount: function (form) {
 		let calculated_amount = 0;
@@ -14,21 +16,9 @@ frappe.ui.form.on('Sales Invoice', {
 	refresh: function (form) {
 		form.set_query("debit_to", () => { return { filters: { "is_group": 0, "parent_account": "Accounts Receivable" } } });
 		form.set_query("assets_account", () => { return { filters: { "is_group": 0, "parent_account": "Stock Assets" } } });
-		form.set_query("customer", () => { return { filters: { "group": "Customer" } } });
+		form.set_query("party", () => { return { filters: { "group": "Customer" } } });
 		form.set_query("item", "items", () => { return { filters: { "labelled": "Sold" } } });
-	},
-
-	on_submit: function (form) {
-		frappe.show_alert({'message': "This got submitted", 'indicator': 'green'});
-	},
-
-	debit_to: function (form) {
-		frappe.call({
-			method: "accounting.api.say_hi",
-			callback: (response) => {
-				frappe.show_alert({ 'message': "This came from an API: " + response.message, 'indicator': 'blue' });
-			}
-		});
+		make_payment_entry(form);
 	}
 });
 

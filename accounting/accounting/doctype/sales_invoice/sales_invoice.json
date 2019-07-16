@@ -1,13 +1,13 @@
 {
- "autoname": "format:INV-SALES-{customer}-{####}",
+ "autoname": "format:INV-SALES-{party}-{####}",
  "creation": "2019-06-24 17:29:48.239612",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "customer_details",
-  "customer",
+  "party",
   "column_break_3",
-  "customer_name",
+  "party_name",
   "invoice_details_section",
   "posting_timestamp",
   "items",
@@ -20,14 +20,6 @@
  ],
  "fields": [
   {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Customer",
-   "options": "Party",
-   "reqd": 1
-  },
-  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -35,12 +27,6 @@
    "options": "Sales Invoice",
    "print_hide": 1,
    "read_only": 1
-  },
-  {
-   "fetch_from": "customer.party_name",
-   "fieldname": "customer_name",
-   "fieldtype": "Read Only",
-   "label": "Customer Name"
   },
   {
    "fieldname": "items",
@@ -52,7 +38,8 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Read Only",
-   "label": "Total Amount"
+   "label": "Total Amount",
+   "options": "Currency"
   },
   {
    "fieldname": "customer_details",
@@ -98,10 +85,24 @@
    "label": "Debit To",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Party",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "party.party_name",
+   "fieldname": "party_name",
+   "fieldtype": "Read Only",
+   "label": "Customer Name"
   }
  ],
  "is_submittable": 1,
- "modified": "2019-07-04 15:26:29.490161",
+ "modified": "2019-07-12 14:32:22.811964",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Sales Invoice",

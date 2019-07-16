@@ -1,13 +1,13 @@
 {
- "autoname": "format:INV-PUR-{supplier}-{####}",
+ "autoname": "format:INV-PUR-{party}-{####}",
  "creation": "2019-06-24 17:31:39.331856",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "supplier_details_column",
-  "supplier",
+  "party",
   "column_break_3",
-  "supplier_name",
+  "party_name",
   "invoice_details_section",
   "posting_timestamp",
   "items",
@@ -19,14 +19,6 @@
   "amended_from"
  ],
  "fields": [
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Supplier",
-   "options": "Party",
-   "reqd": 1
-  },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
@@ -47,12 +39,6 @@
    "label": "Items",
    "options": "Invoice Item",
    "reqd": 1
-  },
-  {
-   "fetch_from": "supplier.party_name",
-   "fieldname": "supplier_name",
-   "fieldtype": "Read Only",
-   "label": "Supplier Name"
   },
   {
    "fieldname": "supplier_details_column",
@@ -98,10 +84,24 @@
    "label": "Assets Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Party",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "party.party_name",
+   "fieldname": "party_name",
+   "fieldtype": "Read Only",
+   "label": "Supplier Name"
   }
  ],
  "is_submittable": 1,
- "modified": "2019-07-04 15:24:05.576360",
+ "modified": "2019-07-12 11:45:34.329425",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Purchase Invoice",

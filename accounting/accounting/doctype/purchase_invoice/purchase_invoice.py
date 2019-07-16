@@ -6,6 +6,8 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from frappe.utils import now_datetime
+
 
 class PurchaseInvoice(Document):
     def validate(self):
@@ -23,47 +25,52 @@ class PurchaseInvoice(Document):
         doc = frappe.get_doc({
             'doctype': 'GL Entry',
             'posting_datetime': self.posting_timestamp,
+            'voucher_type': self.doctype,
+            'reference_doc': self.name,
+
             'account': self.credit_to,
             'credit': self.total_amount,
-            'voucher_type': self.doctype,
-            'against_account': self.assets_account,
-            'reference_doc': self.name
+            'against_account': self.assets_account
         })
         doc.insert()
-
-        doc = frappe.get_doc("Account", self.assets_account)
-        doc.account_balance = doc.account_balance + float(self.total_amount)
-        doc.save()
 
         #  pay money: debit account
         doc = frappe.get_doc({
             'doctype': 'GL Entry',
             'posting_datetime': self.posting_timestamp,
+            'voucher_type': self.doctype,
+            'reference_doc': self.name,
+
             'account': self.assets_account,
             'debit': self.total_amount,
-            'voucher_type': self.doctype,
-            'against_account': self.credit_to,
-            'reference_doc': self.name
+            'against_account': self.credit_to
         })
         doc.insert()
 
-        doc = frappe.get_doc("Account", self.credit_to)
-        doc.account_balance = doc.account_balance - float(self.total_amount)
-        doc.save()
-
     def on_cancel(self):
         # reverse transactions
-        doc = frappe.get_doc("Account", self.assets_account)
-        doc.account_balance = doc.account_balance - float(self.total_amount)
-        doc.save()
+        # add more gl entries
+        doc = frappe.get_doc({
+            'doctype': 'GL Entry',
+            'posting_datetime': now_datetime(),
+            'voucher_type': self.doctype,
+            'reference_doc': self.name,
 
-        doc = frappe.get_doc("Account", self.credit_to)
-        doc.account_balance = doc.account_balance + float(self.total_amount)
-        doc.save()
+            'account': self.credit_to,
+            'debit': self.total_amount,
+            'against_account': self.assets_account
+        })
+        doc.insert()
 
-        # remove gl entry
-        frappe.db.sql("""
-            delete from `tabGL Entry` 
-            where reference_doc='{}' 
-        """.format(self.name))
+        #  pay money: debit account
+        doc = frappe.get_doc({
+            'doctype': 'GL Entry',
+            'posting_datetime': now_datetime(),
+            'voucher_type': self.doctype,
+            'reference_doc': self.name,
 
+            'account': self.assets_account,
+            'credit': self.total_amount,
+            'against_account': self.credit_to
+        })
+        doc.insert()

@@ -1,6 +1,8 @@
 // Copyright (c) 2019, gvn and contributors
 // For license information, please see license.txt
 
+{% include 'accounting/public/js/custom.js' %}
+
 frappe.ui.form.on('Purchase Invoice', {
 	set_total_amount: function (form) {
 		let calculated_amount = 0;
@@ -14,14 +16,10 @@ frappe.ui.form.on('Purchase Invoice', {
 	refresh: function (form) {
 		form.set_query("credit_to", () => { return { filters: { "is_group": 0, "parent_account": "Accounts Payable" } } });
 		form.set_query("assets_account", () => { return { filters: { "is_group": 0, "parent_account": "Stock Assets" } } });
-		form.set_query("supplier", () => { return { filters: { "group": "Supplier" } } });
+		form.set_query("party", () => { return { filters: { "group": "Supplier" } } });
 		form.set_query("item", "items", () => { return { filters: { "labelled": "Purchased" } } });
-	},
-
-	on_submit: function (form) {
-		frappe.show_alert({ 'message': "This got submitted", 'indicator': 'green' });
+		make_payment_entry(form);
 	}
-
 });
 
 frappe.ui.form.on('Invoice Item', {
