@@ -6,7 +6,8 @@
  "field_order": [
   "party_id",
   "party_name",
-  "group"
+  "group",
+  "account_balance"
  ],
  "fields": [
   {
@@ -29,9 +30,14 @@
    "label": "Group",
    "options": "Party Type",
    "reqd": 1
+  },
+  {
+   "fieldname": "account_balance",
+   "fieldtype": "Currency",
+   "label": "Account Balance"
   }
  ],
- "modified": "2019-07-03 18:34:29.894999",
+ "modified": "2019-07-16 13:58:02.745273",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Party",

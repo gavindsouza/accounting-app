@@ -38,11 +38,17 @@ frappe.query_reports["General Ledger"] = {
 			"label": __("Voucher Type"),
 			"fieldtype": "Select",
 			"options": [
-				"",
+				'',
 				__("Purchase Invoice"),
 				__("Sales Invoice"),
-				__("Journal Entry")
+				__("Journal Entry"),
+				__("Payment Entry")
 			]
+		},
+		{
+			"fieldname": "reference_document",
+			"label": "Reference Document",
+			"fieldtype": "Data"
 		},
 		{
 			"fieldname": "account",

@@ -22,3 +22,21 @@ function make_payment_entry(form) {
         );
     }
 }
+
+function add_button_to_general_ledger(form) {
+    if (form.doc.docstatus > 0) {
+        form.add_custom_button(
+            __('Show General Ledger'),
+            () => {
+                frappe.set_route(
+                    'query-report',
+                    'General Ledger',
+                    {
+                        'voucher_type': form.doc.doctype,
+                        'reference_document': form.doc.name
+                    })
+            },
+            __('Reports')
+        )
+    }
+}
