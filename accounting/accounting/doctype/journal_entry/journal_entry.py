@@ -65,7 +65,7 @@ class JournalEntry(Document):
                 doc.credit = entry.debit
                 doc.debit = entry.credit
                 doc.reason = "Cancelled {} on {}".format(
-                    self.doctype, getdate(doc.posting_datetime)) + entry.reason
+                    self.doctype, getdate(doc.posting_datetime))
             else:
                 frappe.throw(_("Invalid journal entry type"))
 
