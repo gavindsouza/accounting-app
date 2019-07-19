@@ -60,7 +60,7 @@ def conditions(filters):
     if reference_document:
         conditions += ["reference_doc='{}'".format(reference_document)]
 
-    conditions += ["DATE(posting_datetime) >= '{}' and DATE(posting_datetime) <= '{}'".format(from_date, to_date)]
+    # conditions += ["DATE(posting_datetime) >= '{}' and DATE(posting_datetime) <= '{}'".format(from_date, to_date)]
     where_conditions = "where {}".format(' and '.join(conditions))
 
     return where_conditions

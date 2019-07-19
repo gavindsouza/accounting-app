@@ -1,5 +1,5 @@
 {
- "add_total_row": 1,
+ "add_total_row": 0,
  "creation": "2019-07-11 12:15:29.229017",
  "disable_prepared_report": 0,
  "disabled": 0,
@@ -7,7 +7,7 @@
  "doctype": "Report",
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2019-07-11 12:49:23.951508",
+ "modified": "2019-07-17 16:22:57.777785",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Trial Balance",
@@ -16,7 +16,7 @@
  "query": "select\n\tDATE(posting_datetime) as \"Posting Date:Date:100\",\n\taccount as \"Account:Link/Account:380\",\n\tsum(debit) as \"Debit:Currency:140\",\n\tsum(credit) as \"Credit:Currency:140\"\n\nfrom `tabGL Entry`\n\ngroup by posting_datetime, account\norder by posting_datetime, account",
  "ref_doctype": "GL Entry",
  "report_name": "Trial Balance",
- "report_type": "Query Report",
+ "report_type": "Script Report",
  "roles": [
   {
    "role": "System Manager"
