@@ -21,7 +21,14 @@ class PaymentEntry(Document):
             frappe.throw(_("Payment Entry {} exists".format(
                 existing_payment_entry[0][0])))
 
+        # if flt(self.party_balance) != flt(self.payment_amount):
+        #     frappe.throw(_("Please add the correct amount"))
+            
+
     def on_submit(self):
+        if flt(self.party_balance) != flt(self.payment_amount):
+            frappe.throw(_("Please add the correct amount"))
+
         self.make_gl_entry(_type='submit')
 
     def on_cancel(self):

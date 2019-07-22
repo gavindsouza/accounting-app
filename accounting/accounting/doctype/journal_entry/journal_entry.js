@@ -1,6 +1,8 @@
 // Copyright (c) 2019, gvn and contributors
 // For license information, please see license.txt
 
+{% include 'accounting/public/js/custom.js' %}
+
 frappe.ui.form.on('Journal Entry', {
 	set_summary: function (form) {
 		let total_debit = 0;
@@ -18,6 +20,7 @@ frappe.ui.form.on('Journal Entry', {
 
 	refresh: function (form) {
 		form.set_query("account", "journal_entry_table", () => { return { filters: { "is_group": 0 } } });
+		add_button_to_general_ledger(form);
 	}
 });
 
