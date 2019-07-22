@@ -11,7 +11,7 @@ def get_children(doctype, parent='', filters=None, is_root=None):
 
 
 @frappe.whitelist()
-def make_payment_entry(reference_invoice, transaction_type):
+def make_payment_entry(reference_invoice, transaction_type, paid_from, paid_to):
     doctype_name = 'Payment Entry'
     instance_doc = {
         'doctype': doctype_name,
@@ -21,6 +21,8 @@ def make_payment_entry(reference_invoice, transaction_type):
 
     if not frappe.db.exists(instance_doc):
         doc = frappe.get_doc(instance_doc)
+        doc.paid_from = paid_from
+        doc.paid_to = paid_to
         doc.insert()
         doc_name = doc.name
 
